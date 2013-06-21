@@ -8,6 +8,10 @@
 x2chは2chのダウンローダとパーサを備えたライブラリです。
 このライブラリを使うとRubyで簡単に2chにアクセスできます。
 
+## Install
+
+    gem install x2ch
+
 ## Examples
 
 2chのカテゴリーと板一覧を取得する。
