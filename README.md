@@ -47,6 +47,6 @@ x2chは2chのダウンローダとパーサを備えたライブラリです。
 
 - [xmisao](http://www.xmisao.com/)
 
-## license
+## License
 
 This library is distributed under the MIT license.
