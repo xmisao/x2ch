@@ -2,6 +2,7 @@
 
 require 'open-uri'
 require 'kconv'
+require 'zlib'
 
 module X2CH
 	class Bbs
@@ -78,14 +79,15 @@ module X2CH
 	end
 
 	class Thread
-		attr_accessor :url, :name, :num
+		attr_accessor :url, :dat, :name, :num
 
 		def initialize(url, dat, name, num)
 			@url, @dat, @name, @num = url, dat, name, num
 		end
 
-		def posts
-			Dat.parse(Dat.download(@url + "dat/" + @dat))
+		def posts(if_modified_since = nil, range = nil)
+			res = Dat.download(@url + "dat/" + @dat, if_modified_since, range)
+			ArrayResponse.new(Dat.parse(res), res.status, res.last_modified, res.content_encoding, res.body_size)
 		end
 
 		def each(&blk)
@@ -104,9 +106,48 @@ module X2CH
 	end
 
 	class Agent
-		def self.download(url)
-			open(url){|f| f.read}.toutf8
+		def self.download(url, if_modified_since = nil, range = nil)
+			header = {"User-Agent" => "Monazilla/1.00 (x2ch/0.9.1)", "Accept-Encoding" => 'gzip'}
+			if if_modified_since
+				header["If-Modified-Since"] = if_modified_since
+			end
+			if range
+				header["Range"] = range
+			end
+			begin
+				res = open(url, header){|f|
+					body = nil
+					if f.content_encoding.index('gzip')
+						body = Zlib::GzipReader.new(f).read.toutf8
+					else
+						body = f.read.toutf8
+					end
+					[body, f.status, f.last_modified, f.content_encoding, body.size]
+				}
+			rescue OpenURI::HTTPError => e
+				raise DownloadError.new(e.message)
+			end
+			StringResponse.new(res[0], res[1], res[2], res[3], res[4])
 		end
+	end
+
+	class DownloadError < StandardError ; end
+
+	module Response
+		attr_accessor :status, :last_modified, :content_encoding, :body_size
+
+		def initialize(obj, status, last_modified, content_encoding, body_size)
+			@status, @last_modified, @content_encoding, @body_size = status, last_modified, content_encoding, body_size
+			super(obj)
+		end
+	end
+
+	class StringResponse < String
+		include Response
+	end
+
+	class ArrayResponse < Array
+		include Response
 	end
 
 	class BbsMenu
@@ -165,8 +206,8 @@ module X2CH
 	end
 
 	class Dat
-		def self.download(url)
-			Agent.download(url)
+		def self.download(url, if_modified_since = nil, range = nil)
+			Agent.download(url, if_modified_since, range)
 		end
 		
 		def self.parse(dat)

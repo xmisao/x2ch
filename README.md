@@ -15,6 +15,7 @@ x2chは2chのダウンローダとパーサを備えたライブラリです。
 ## Examples
 
 2chのカテゴリーと板一覧を取得する。
+なおサーバからのダウンロードはgzipに対応しています。
 
     require 'x2ch'
     include X2CH
@@ -46,6 +47,29 @@ x2chは2chのダウンローダとパーサを備えたライブラリです。
     bbs['趣味']['アクアリウム'].threads.first.each{|post|
         puts "#{post.name} <> #{post.mail} <> #{post.metadata} <> #{post.body}"
     }
+
+posts等の返却値はX2CH::Responseモジュールにより拡張されているため、レスポンスの情報を取得できます。
+これによりLast-Modifiedに基づいて、If-Modified-Sinceによる更新確認が行えます。
+
+    require 'x2ch'
+    include X2CH
+    
+    bbs = Bbs.load
+    res = bbs['趣味']['アクアリウム'].threads.first.posts
+    puts res.status
+    puts res.last_modified
+    puts res.content_encoding
+    puts res.body_size
+    
+    begin
+    	res = bbs['趣味']['アクアリウム'].threads.first.posts(res.last_modified.httpdate)
+    	puts res.status
+    	puts res.last_modified
+    	puts res.content_encoding
+    	puts res.body_size
+    rescue DownloadError => e
+    	puts e.message
+    end
 
 ## Author
 
