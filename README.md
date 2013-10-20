@@ -1,6 +1,6 @@
 # x2ch
 
-- [https://rubygems.org/gems/x2c](https://rubygems.org/gems/x2ch)
+- [https://rubygems.org/gems/x2ch](https://rubygems.org/gems/x2ch)
 - [https://github.com/xmisao/x2ch](https://github.com/xmisao/x2ch)
 
 ## Description
