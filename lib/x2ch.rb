@@ -86,7 +86,12 @@ module X2CH
 		end
 
 		def posts(if_modified_since = nil, range = nil)
-			res = Dat.download(@url + "dat/" + @dat, if_modified_since, range)
+			if @url.match(/machi.to/)
+				part = @url.match(/^(http:\/\/.+?)\/(.+?)\//).to_a
+				res = Dat.download(part[1] + "/bbs/offlaw.cgi/" + part[2] + '/' + @dat.sub('.cgi', ''), if_modified_since, range)
+			else
+				res = Dat.download(@url + "dat/" + @dat, if_modified_since, range)
+			end
 			ArrayResponse.new(Dat.parse(res), res.status, res.last_modified, res.content_encoding, res.body_size)
 		end
 
@@ -176,7 +181,7 @@ module X2CH
 
 				next unless category
 
-				b = l.match(/<A HREF=(http:\/\/.*(?:\.2ch\.net|\.bbspink\.com).+\/)>(.+)<\/A>/).to_a
+				b = l.match(/<A HREF=(http:\/\/.*(?:\.2ch\.net|\.bbspink\.com|\.machi\.to)[^\s]*).*>(.+)<\/A>/).to_a
 				if b[0]
 					next if IGNORE_BOARDS.include?(b[2])
 
@@ -196,7 +201,7 @@ module X2CH
 		def self.parse(url, subject)
 			threads = []
 			subject.each_line{|l|
-				m = l.match(/^(\d+\.dat)<>(.+)\((\d+)\)$/).to_a
+				m = l.match(/^(\d+\.(?:dat|cgi))(?:<>|,)(.+)\((\d+)\)$/).to_a
 				if m[0]
 					threads << Thread.new(url, m[1], m[2], m[3].to_i)
 				end
@@ -213,9 +218,14 @@ module X2CH
 		def self.parse(dat)
 			posts = []
 			dat.each_line{|l|
-				m = l.match(/^(.+?)<>(.*?)<>(.*?)<>(.+)<>.*$/).to_a
+				m = l.match(/^(\d+)<>(.+?)<>(.*?)<>(.*?)<>(.+)<>.*$/).to_a
 				if m[0]
-					posts << Post.new(m[1], m[2], m[3], m[4])
+					posts << Post.new(m[2], m[3], m[4], m[5])
+				else
+					m = l.match(/^(.+?)<>(.*?)<>(.*?)<>(.+)<>.*$/).to_a
+					if m[0]
+						posts << Post.new(m[1], m[2], m[3], m[4])
+					end
 				end
 			}
 			posts
