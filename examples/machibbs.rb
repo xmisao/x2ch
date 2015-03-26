@@ -7,5 +7,5 @@ thread = bbs['まちＢＢＳ']['神奈川'].threads.first
 p thread
 
 thread.each{|post|
-	p post
+  p post
 }

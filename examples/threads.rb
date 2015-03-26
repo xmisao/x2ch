@@ -5,5 +5,5 @@ include X2CH
 
 bbs = Bbs.load
 bbs['趣味']['アクアリウム'].each{|thread|
-    puts thread.name + '(' + thread.num.to_s + ')'
+  puts thread.name + '(' + thread.num.to_s + ')'
 }

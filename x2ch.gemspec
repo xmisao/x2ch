@@ -8,5 +8,5 @@ Gem::Specification.new do |s|
   s.email       = 'mail@xmisao.com'
   s.files       = ["lib/x2ch.rb"]
   s.homepage    = 'https://github.com/xmisao/x2ch'
-	s.license     = 'MIT'
+  s.license     = 'MIT'
 end

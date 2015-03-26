@@ -22,10 +22,10 @@ x2chは2chのダウンローダとパーサを備えたライブラリです。
     
     bbs = Bbs.load
     bbs.each{|category|
-        puts '- ' + category.name
-        category.each{|board|
-            puts ' - ' + board.name 
-        }
+      puts '- ' + category.name
+      category.each{|board|
+        puts ' - ' + board.name
+      }
     }
 
 カテゴリー「趣味」の「アクアリウム」板のスレッド一覧を取得する。
@@ -35,7 +35,7 @@ x2chは2chのダウンローダとパーサを備えたライブラリです。
     
     bbs = Bbs.load
     bbs['趣味']['アクアリウム'].each{|thread|
-        puts thread.name + '(' + thread.num.to_s + ')'
+      puts thread.name + '(' + thread.num.to_s + ')'
     }
 
 アクアリウム板の最初のスレッドの投稿を取得する。
@@ -45,7 +45,7 @@ x2chは2chのダウンローダとパーサを備えたライブラリです。
     
     bbs = Bbs.load
     bbs['趣味']['アクアリウム'].threads.first.each{|post|
-        puts "#{post.name} <> #{post.mail} <> #{post.metadata} <> #{post.body}"
+      puts "#{post.name} <> #{post.mail} <> #{post.metadata} <> #{post.body}"
     }
 
 posts等の返却値はX2CH::Responseモジュールにより拡張されているため、レスポンスの情報を取得できます。
@@ -62,13 +62,13 @@ posts等の返却値はX2CH::Responseモジュールにより拡張されてい�
     puts res.body_size
     
     begin
-    	res = bbs['趣味']['アクアリウム'].threads.first.posts(res.last_modified.httpdate)
-    	puts res.status
-    	puts res.last_modified
-    	puts res.content_encoding
-    	puts res.body_size
+      res = bbs['趣味']['アクアリウム'].threads.first.posts(res.last_modified.httpdate)
+      puts res.status
+      puts res.last_modified
+      puts res.content_encoding
+      puts res.body_size
     rescue DownloadError => e
-    	puts e.message
+      puts e.message
     end
 
 ## Author

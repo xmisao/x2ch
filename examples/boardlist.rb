@@ -5,8 +5,8 @@ include X2CH
 
 bbs = Bbs.load
 bbs.each{|category|
-    puts '- ' + category.name
-    category.each{|board|
-        puts ' - ' + board.name 
-    }
+  puts '- ' + category.name
+  category.each{|board|
+    puts ' - ' + board.name
+  }
 }
