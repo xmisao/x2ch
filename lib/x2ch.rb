@@ -3,6 +3,7 @@
 require 'open-uri'
 require 'kconv'
 require 'zlib'
+require 'x2ch/version'
 
 module X2CH
   class Bbs
@@ -112,7 +113,7 @@ module X2CH
 
   class Agent
     def self.download(url, if_modified_since = nil, range = nil)
-      header = {"User-Agent" => "Monazilla/1.00 (x2ch/0.9.1)", "Accept-Encoding" => 'gzip'}
+      header = {"User-Agent" => "Monazilla/1.00 (x2ch/#{X2CH::VERSION})", "Accept-Encoding" => 'gzip'}
       if if_modified_since
         header["If-Modified-Since"] = if_modified_since
       end
