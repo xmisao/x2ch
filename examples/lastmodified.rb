@@ -11,11 +11,11 @@ puts res.content_encoding
 puts res.body_size
 
 begin
-	res = bbs['趣味']['アクアリウム'].threads.first.posts(res.last_modified.httpdate)
-	puts res.status
-	puts res.last_modified
-	puts res.content_encoding
-	puts res.body_size
+  res = bbs['趣味']['アクアリウム'].threads.first.posts(res.last_modified.httpdate)
+  puts res.status
+  puts res.last_modified
+  puts res.content_encoding
+  puts res.body_size
 rescue DownloadError => e
-	puts e.message
+  puts e.message
 end
